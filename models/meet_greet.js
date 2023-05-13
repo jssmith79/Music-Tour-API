@@ -14,11 +14,29 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   meet_greet.init({
-    event_id: DataTypes.INTEGER,
-    band_id: DataTypes.INTEGER,
-    meet_start_time: DataTypes.TIME,
-    meet_end_time: DataTypes.TIME,
-    meet_greet_id: DataTypes.INTEGER
+    event_id: {
+      type: DataTypes.INTEGER,
+      secondaryKey: true,
+      allowNull: false
+    },
+    band_id: {
+      type: DataTypes.INTEGER,
+      secondaryKey: true,
+      allowNull: false
+    },
+    meet_start_time: {
+      type: DataTypes.TIME,
+      allowNull: false
+    },
+    meet_end_time: {
+      type: DataTypes.TIME,
+      allowNull: false
+    },
+    meet_greet_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      allowNull: false
+    }
   }, {
     sequelize,
     modelName: 'meet_greet',

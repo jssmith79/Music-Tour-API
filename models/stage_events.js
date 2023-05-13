@@ -14,9 +14,21 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   stage_events.init({
-    stage_events_id: DataTypes.INTEGER,
-    stage_id: DataTypes.INTEGER,
-    event_id: DataTypes.INTEGER
+    stage_events_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    stage_id: {
+      type: DataTypes.INTEGER,
+      secondaryKey: true,
+      allowNull: false
+    },
+    event_id: {
+      type: DataTypes.INTEGER,
+      secondaryKey: true,
+      allowNull: false
+    }
   }, {
     sequelize,
     modelName: 'stage_events',
