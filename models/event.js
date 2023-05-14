@@ -1,19 +1,35 @@
 'use strict';
+const { Timestamp } = require('mongodb');
 const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class event extends Model {
+  class Event extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      // define association here
+    static associate({ Stage, Stage_events, Meet_greet, Set_time }) {
+      // stages
+      Event.belongsToMany(Stage, {
+        foreignKey: "event_id",
+        as: "stages",
+        through: Stage_events
+      })
+      //meet and greets
+      Event.hasMany(Meet_greet,{
+        foreignKey: "event_id",
+        as: "meet_greet"
+      })
+      //set times
+      Event.hasMany(Set_time, {
+        foreignKey: "event_id",
+        as: "set_times"
+      })
     }
   }
-  event.init({
+  Event.init({
     event_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -38,7 +54,10 @@ module.exports = (sequelize, DataTypes) => {
 
   }, {
     sequelize,
-    modelName: 'event',
+    modelName: 'Event',
+    tableName: 'event',
+    timestamps: false
+
   });
-  return event;
+  return Event;
 };

@@ -1,17 +1,33 @@
 const bands = require('express').Router();
 const db = require('../models')
-const { Band } = db
+const { Band, meet_greet, event, set_time } = db
 const { Op } = require('sequelize')
 
 //find all bands
 
-bands.get('/', async (req, res) => {
+bands.get('/:name', async (req, res) => {
     try {
         const foundBands = await Band.findAll({
-            order: [['available_start_time', 'ASC']],
-            where: {
-                name: { [Op.like]: `%${req.query.name ? req.query.name: ''}%`}
-            }
+            include: [ 
+                { 
+                    model: meet_greet, 
+                    as: "meet_greets",
+                    include: { 
+                        model: Event, 
+                        as: "event",
+                        where: { name: { [Op.like]: `%${req.query.event ? req.query.event : ''}%` } }
+                    } 
+                },
+                { 
+                    model: set_time,
+                    as: "set_times",
+                    include: { 
+                        model: Event, 
+                        as: "event",
+                        where: { name: { [Op.like]: `%${req.query.event ? req.query.event : ''}%` } }
+                    }
+                }
+            ] 
         })
         res.status(200).json(foundBands)
     } catch (error) {
@@ -20,7 +36,7 @@ bands.get('/', async (req, res) => {
 })
 
 //find any band
-bands.get('/:id', async (req, res) => {
+bands.get('/:name', async (req, res) => {
     try {
         const foundBand = await Band.findOne({
             where: { band_id: req.params.id }
@@ -43,7 +59,7 @@ bands.post('/', async (req, res) => {
     }
 })
 
-bands.put('/:id', async (req, res) => {
+bands.put('/:name', async (req, res) => {
     try {
         const updatedBands = await Band.update(req.body, {
             where: {
@@ -61,7 +77,7 @@ bands.put('/:id', async (req, res) => {
 
 //delete a band
 
-bands.delete('/:id', async (req, res) => {
+bands.delete('/:name', async (req, res) => {
     try {
         const deletedBands = await Band.destroy({
             where: {
