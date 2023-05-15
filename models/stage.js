@@ -13,13 +13,13 @@ module.exports = (sequelize, DataTypes) => {
       // events
       Stage.belongsToMany(Event, {
         foreignKey: "stage_id",
-        as: "event",
+        as: "events",
         through: Stage_events
       })
       //set times
       Stage.hasMany(Set_time, {
         foreignKey: "stage_id",
-        as: "set-time"
+        as: "set_times"
       })
     }
   }
@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Stage',
-    tableName: 'stage',
+    tableName: 'stages',
     timestamps: false
   });
   return Stage;

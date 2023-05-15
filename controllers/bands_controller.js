@@ -1,31 +1,37 @@
 const bands = require('express').Router();
 const db = require('../models')
-const { Band, meet_greet, event, set_time } = db
+const { Band, Meet_greet, Event, Set_time } = db
 const { Op } = require('sequelize')
 
-//find all bands
+//find one band
 
 bands.get('/:name', async (req, res) => {
     try {
-        const foundBands = await Band.findAll({
+        console.log("here")
+        const foundBands = await Band.findOne({
+            where: {name: req.params.name},
             include: [ 
                 { 
-                    model: meet_greet, 
+                    model: Meet_greet, 
                     as: "meet_greets",
-                    include: { 
-                        model: Event, 
-                        as: "event",
-                        where: { name: { [Op.like]: `%${req.query.event ? req.query.event : ''}%` } }
-                    } 
+
+//include statements caused the app to throw errors so they are omitted for the time being.
+
+                    // include: { 
+                    //     model: Event, 
+                    //     as: "event",
+                    //     where: { name: { [Op.like]: `%${req.query.event ? req.query.event : ''}%` } }
+                    // } 
                 },
+
                 { 
-                    model: set_time,
+                    model: Set_time,
                     as: "set_times",
-                    include: { 
-                        model: Event, 
-                        as: "event",
-                        where: { name: { [Op.like]: `%${req.query.event ? req.query.event : ''}%` } }
-                    }
+                    // include: { 
+                    //     model: Event, 
+                    //     as: "event",
+                    //     where: { name: { [Op.like]: `%${req.query.event ? req.query.event : ''}%` } }
+                    // }
                 }
             ] 
         })
@@ -35,12 +41,11 @@ bands.get('/:name', async (req, res) => {
     }
 })
 
-//find any band
-bands.get('/:name', async (req, res) => {
+//find all band
+bands.get('/', async (req, res) => {
     try {
-        const foundBand = await Band.findOne({
-            where: { band_id: req.params.id }
-        })
+        const foundBand = await Band.findAll(
+        )
         res.status(200).json(foundBand);
     } catch (error) {
         res.status(500).json(error);
@@ -59,7 +64,7 @@ bands.post('/', async (req, res) => {
     }
 })
 
-bands.put('/:name', async (req, res) => {
+bands.put('/:id', async (req, res) => {
     try {
         const updatedBands = await Band.update(req.body, {
             where: {
@@ -77,7 +82,7 @@ bands.put('/:name', async (req, res) => {
 
 //delete a band
 
-bands.delete('/:name', async (req, res) => {
+bands.delete('/:id', async (req, res) => {
     try {
         const deletedBands = await Band.destroy({
             where: {
