@@ -17,21 +17,21 @@ bands.get('/:name', async (req, res) => {
 
 //include statements caused the app to throw errors so they are omitted for the time being.
 
-                    // include: { 
-                    //     model: Event, 
-                    //     as: "event",
-                    //     where: { name: { [Op.like]: `%${req.query.event ? req.query.event : ''}%` } }
-                    // } 
+                    include: { 
+                        model: Event, 
+                        as: "event",
+                        where: { name: { [Op.like]: `%${req.query.event ? req.query.event : ''}%` } }
+                    } 
                 },
 
                 { 
                     model: Set_time,
                     as: "set_times",
-                    // include: { 
-                    //     model: Event, 
-                    //     as: "event",
-                    //     where: { name: { [Op.like]: `%${req.query.event ? req.query.event : ''}%` } }
-                    // }
+                    include: { 
+                        model: Event, 
+                        as: "event",
+                        where: { name: { [Op.like]: `%${req.query.event ? req.query.event : ''}%` } }
+                    }
                 }
             ] 
         })
